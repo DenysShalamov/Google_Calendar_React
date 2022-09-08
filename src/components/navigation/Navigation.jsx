@@ -8,16 +8,25 @@ const Navigation = ({ weekDates }) => {
   return (
     <header className="calendar__header">
       {weekDates.map((dayDate) => (
-        <div
-          key={Math.random()}
-          className={
-            formatDate(dayDate) === formatDate(new Date())
-              ? 'calendar__day-label day-label calendar__today'
-              : 'calendar__day-label day-label'
-          }
-        >
-          <span className="day-label__day-name">{days[dayDate.getDay()]}</span>
-          <span className="day-label__day-number">{dayDate.getDate()}</span>
+        <div key={Math.random()} className="calendar__day-label day-label">
+          <span
+            className={
+              formatDate(dayDate) === formatDate(new Date())
+                ? 'day-label__day-name day-label__day-name-today'
+                : 'day-label__day-name'
+            }
+          >
+            {days[dayDate.getDay()]}
+          </span>
+          <span
+            className={
+              formatDate(dayDate) === formatDate(new Date())
+                ? 'day-label__day-number day-label__day-number-today'
+                : 'day-label__day-number'
+            }
+          >
+            {dayDate.getDate()}
+          </span>
         </div>
       ))}
     </header>

@@ -1,13 +1,21 @@
-.time-line {
-  height: 2px;
-  background-color: rgb(35, 64, 194);
+.time {
+  position: relative;
 }
 
-.circle {
+.time__line {
   position: absolute;
-  background-color: rgb(35, 64, 194);
+    width: 100%;
+    border-top: 2px solid blue;
+    z-index: 3;
+}
+
+.time__circle {
+  
+  position: absolute;
+  background-color: blue;
+  width: 8px;
+  height: 8px;
+  margin-top: -5px;
+  margin-left: -5px;
   border-radius: 50%;
-  height: 10px;
-  width: 10px;
-  top: -4px
 }

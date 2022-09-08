@@ -1,14 +1,12 @@
 import React from 'react';
 import Event from '../event/Event';
 import { formatMins } from '../../utils/dateUtils.js';
-import TimeLine from '../TimeLine/TimeLine';
 
 const Hour = ({ dataHour, hourEvents, onDelete, dataDay }) => {
   const isToday = dataDay === new Date().getDate();
   const isHour = new Date().getHours() === dataHour;
   return (
     <div className="calendar__time-slot" data-time={dataHour + 1}>
-      {isToday && isHour && <TimeLine marginTop={new Date().getMinutes()} />}
       {/* if no events in the current hour nothing will render here */}
       {hourEvents.map(({ id, dateFrom, dateTo, title }) => {
         const eventStart = `${dateFrom.getHours()}:${formatMins(

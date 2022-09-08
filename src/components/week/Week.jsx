@@ -1,5 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 import Day from '../day/Day';
+import TimeLine from '../TimeLine/TimeLine';
 
 import './week.scss';
 
@@ -20,7 +22,10 @@ const Week = ({ weekDates, events, onDelete }) => {
             dataDay={dayStart.getDate()}
             dayEvents={dayEvents}
             onDelete={onDelete}
-          />
+          >
+            {moment(dayStart).format('LL') ===
+              moment(new Date()).format('LL') && <TimeLine />}
+          </Day>
         );
       })}
     </div>

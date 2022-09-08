@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const getWeekStartDate = (date) => {
   const dateCopy = new Date(date);
   const dayOfWeek = dateCopy.getDay();
@@ -53,4 +55,14 @@ export const setDay = (date, value) => {
   }
   date.setDate(date.getDate() - 7);
   return date;
+};
+
+export const getCurrentMonth = (weekDates) => {
+  const currentMonthText = weekDates
+    .map((date) => moment(date).format('MMMM'))
+    .filter((month, index, array) => array.indexOf(month) === index)
+    .map((month, i, array) => (array.length > 1 ? month.slice(0, 3) : month))
+    .join(' - ');
+
+  return currentMonthText;
 };

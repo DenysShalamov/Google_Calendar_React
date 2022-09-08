@@ -50,6 +50,7 @@
 
   &__day-label {
       flex: 1;
+
   }
 }
 
@@ -64,10 +65,23 @@
   &__day-name {
       font-size: 14px;
       text-transform: uppercase;
+
+      &-today {
+        color: blue;
+        font-weight: 700;
+      }
   }
 
   &__day-number {
       font-size: 22px;
+      width: 40px;
+      text-align: center;
+
+      &-today {
+        background-color: blue;
+        color: white;
+        border-radius: 50%;
+      }
   }
 }
 

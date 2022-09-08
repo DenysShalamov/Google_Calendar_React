@@ -42,7 +42,7 @@ const App = () => {
         onTodayDate={handleTodayDate}
         onPrevMonth={handleLeft}
         onNextMonth={handleRight}
-        date={weekStartDate}
+        weekDates={weekDates}
       />
       <Calendar
         weekDates={weekDates}

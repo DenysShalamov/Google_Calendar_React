@@ -42,18 +42,15 @@ class Calendar extends Component {
   };
 
   render() {
-    const { weekDates } = this.props;
+    const { weekDates, visible, onClose } = this.props;
 
     return (
       <section className="calendar">
         <Navigation weekDates={weekDates} />
         <div className="calendar__body">
           <div className="calendar__week-container">
-            {this.props.visible && (
-              <Modal
-                onClose={this.props.onClose}
-                onSubmit={this.handleSubmit}
-              />
+            {visible && (
+              <Modal onClose={onClose} onSubmit={this.handleSubmit} />
             )}
             <Sidebar />
             <Week

@@ -1,27 +1,15 @@
 import React from 'react';
-import { months } from '../../utils/dateUtils.js';
+import { getCurrentMonth } from '../../utils/dateUtils.js';
 
 import './header.scss';
-
-const setMonth = (value) => {
-  return months.find((month, index) => {
-    if (index === value) {
-      return month;
-    }
-    return null;
-  });
-};
 
 const Header = ({
   onCreateEvent,
   onTodayDate,
   onPrevMonth,
   onNextMonth,
-  date,
+  weekDates,
 }) => {
-  const currentMonth = setMonth(date.getMonth()).slice(0, 3);
-  const nextMouth = setMonth((date.getMonth() + 1) % 12).slice(0, 3);
-
   return (
     <header className="header">
       <div className="header__title">Calendar</div>
@@ -49,7 +37,7 @@ const Header = ({
             <i className="fas fa-chevron-right"></i>
           </button>
           <span className="navigation__displayed-month">
-            {`${currentMonth} - ${nextMouth}`}
+            {getCurrentMonth(weekDates)}
           </span>
         </div>
       </div>

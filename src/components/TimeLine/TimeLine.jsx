@@ -1,23 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import './timeline.scss';
 
-const TimeLine = ({ marginTop }) => {
-  const [timeLine, setTimeLine] = useState(marginTop);
+const TimeLine = () => {
+  const [timeLine, setTimeLine] = useState(new Date().getMinutes());
 
   useEffect(() => {
     const timeInterval = setInterval(() => {
       setTimeLine(new Date().getMinutes());
-    }, 60000);
+    }, 1000);
 
     return () => {
       clearInterval(timeInterval);
     };
-  }, []);
+  }, [timeLine]);
+
+  const styles = {
+    marginTop: new Date().getHours() * 60 + new Date().getMinutes(),
+  };
 
   return (
-    <div style={{ marginTop }}>
-      <div className="circle"></div>
-      <div className="time-line"></div>
+    <div className="time__line" style={styles}>
+      <div className="time__circle"></div>
     </div>
   );
 };
