@@ -1,31 +1,35 @@
 import React from 'react';
-import moment from 'moment';
+import PropTypes from 'prop-types';
 import Day from '../day/Day';
-import TimeLine from '../TimeLine/TimeLine';
-
 import './week.scss';
 
-const Week = ({ weekDates, events, onDelete }) => {
+const Week = ({
+  weekDates,
+  events,
+  fetchEvents,
+  setModalVisibility,
+  modalVisibility,
+}) => {
   return (
     <div className="calendar__week">
       {weekDates.map((dayStart) => {
         const dayEnd = new Date(dayStart.getTime()).setHours(
           dayStart.getHours() + 24
         );
-        // getting all events from the day we will render
+
         const dayEvents = events.filter(
           (event) => event.dateFrom > dayStart && event.dateTo < dayEnd
         );
         return (
           <Day
+            setModalVisibility={setModalVisibility}
+            modalVisibility={modalVisibility}
             key={dayStart.getDate()}
             dataDay={dayStart.getDate()}
+            dayStart={dayStart}
             dayEvents={dayEvents}
-            onDelete={onDelete}
-          >
-            {moment(dayStart).format('LL') ===
-              moment(new Date()).format('LL') && <TimeLine />}
-          </Day>
+            fetchEvents={fetchEvents}
+          />
         );
       })}
     </div>
@@ -33,3 +37,11 @@ const Week = ({ weekDates, events, onDelete }) => {
 };
 
 export default Week;
+
+Week.propTypes = {
+  weekDates: PropTypes.array.isRequired,
+  events: PropTypes.array.isRequired,
+  fetchEvents: PropTypes.func.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
+  modalVisibility: PropTypes.bool.isRequired,
+};

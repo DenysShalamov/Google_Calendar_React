@@ -1,13 +1,26 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import RedLine from '../redLine/RedLine';
 import Event from '../event/Event';
-import { formatMins } from '../../utils/dateUtils.js';
+import { formatMins, isCurrentTime } from '../../utils/dateUtils.js';
 
-const Hour = ({ dataHour, hourEvents, onDelete, dataDay }) => {
-  const isToday = dataDay === new Date().getDate();
-  const isHour = new Date().getHours() === dataHour;
+const Hour = ({
+  dataHour,
+  hourEvents,
+  dayStart,
+  fetchEvents,
+  setModalVisibility,
+  modalVisibility,
+}) => {
   return (
-    <div className="calendar__time-slot" data-time={dataHour + 1}>
-      {/* if no events in the current hour nothing will render here */}
+    <div
+      className="calendar__time-slot "
+      data-time={dataHour + 1}
+      onClick={() => {
+        setModalVisibility(!modalVisibility);
+      }}
+    >
+      {isCurrentTime(dayStart, dataHour) && <RedLine />}
       {hourEvents.map(({ id, dateFrom, dateTo, title }) => {
         const eventStart = `${dateFrom.getHours()}:${formatMins(
           dateFrom.getMinutes()
@@ -19,13 +32,13 @@ const Hour = ({ dataHour, hourEvents, onDelete, dataDay }) => {
         return (
           <Event
             key={id}
-            // calculating event height = duration of event in minutes
+            eventId={id}
             height={(dateTo.getTime() - dateFrom.getTime()) / (1000 * 60)}
             marginTop={dateFrom.getMinutes()}
             time={`${eventStart} - ${eventEnd}`}
+            dateFrom={dateFrom}
             title={title}
-            id={id}
-            onClick={onDelete}
+            fetchEvents={fetchEvents}
           />
         );
       })}
@@ -34,3 +47,12 @@ const Hour = ({ dataHour, hourEvents, onDelete, dataDay }) => {
 };
 
 export default Hour;
+
+Hour.propTypes = {
+  fetchEvents: PropTypes.func.isRequired,
+  dayStart: PropTypes.object.isRequired,
+  dataHour: PropTypes.number.isRequired,
+  hourEvents: PropTypes.array.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
+  modalVisibility: PropTypes.bool.isRequired,
+};

@@ -3,10 +3,7 @@ import moment from 'moment';
 export const getWeekStartDate = (date) => {
   const dateCopy = new Date(date);
   const dayOfWeek = dateCopy.getDay();
-  const difference =
-    dayOfWeek === 0
-      ? -6 // for Sunday
-      : 1 - dayOfWeek;
+  const difference = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
   const monday = new Date(dateCopy.setDate(date.getDate() + difference));
   return new Date(monday.getFullYear(), monday.getMonth(), monday.getDate());
@@ -48,15 +45,6 @@ export const months = [
   'December',
 ];
 
-export const setDay = (date, value) => {
-  if (value === true) {
-    date.setDate(date.getDate() + 7);
-    return date;
-  }
-  date.setDate(date.getDate() - 7);
-  return date;
-};
-
 export const getCurrentMonth = (weekDates) => {
   const currentMonthText = weekDates
     .map((date) => moment(date).format('MMMM'))
@@ -65,4 +53,51 @@ export const getCurrentMonth = (weekDates) => {
     .join(' - ');
 
   return currentMonthText;
+};
+
+export const isCurrentTime = (day, hour) => {
+  return (
+    moment(new Date()).format('L') == moment(day).format('L') &&
+    moment(new Date()).format('HH') == hour
+  );
+};
+
+export const isToday = (day) => {
+  return moment(day).format('ll') === moment(new Date()).format('ll');
+};
+
+export const eventAtSameTime = (eventsArr, from, to, date) => {
+  return eventsArr.some((event) => {
+    const plannedEventFrom = event.dateFrom.getTime();
+    const plannedEventTo = event.dateTo.getTime();
+
+    const newEventFrom = getDateTime(date, from).getTime();
+    const newEventTo = getDateTime(date, to).getTime();
+
+    return (
+      (newEventFrom > plannedEventFrom && newEventFrom < plannedEventTo) ||
+      (newEventTo > plannedEventFrom && newEventTo < plannedEventTo) ||
+      (newEventFrom < plannedEventTo && newEventTo > plannedEventFrom)
+    );
+  });
+};
+
+const defaultHourFrom = `${
+  new Date().getHours() <= 9
+    ? '0' + new Date().getHours()
+    : new Date().getHours() + 1
+}:00`;
+const defaultHourTo = `${
+  new Date().getHours() + 1 <= 9
+    ? '0' + (new Date().getHours() + 1)
+    : new Date().getHours() + 2
+}:00`;
+
+export const defaultModalTime = {
+  id: '',
+  title: '',
+  description: '',
+  date: moment(new Date()).format('YYYY-MM-DD'),
+  dateFrom: defaultHourFrom,
+  dateTo: defaultHourTo,
 };

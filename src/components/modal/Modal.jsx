@@ -1,97 +1,139 @@
-import React from 'react';
-
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import {
+  getDateTime,
+  eventAtSameTime,
+  defaultModalTime,
+} from '../../utils/dateUtils';
+import {
+  durationIsValid,
+  timeRangeisValid,
+  timeMultiplicityIsValid,
+  eventTimeIsPast,
+} from '../../utils/validation';
 import './modal.scss';
+import { postEvent } from '../../gateway/gateWay';
 
-class Modal extends React.Component {
-  state = {
-    title: '',
-    description: '',
-    date: new Date(),
-    startTime: '',
-    endTime: '',
-  };
+const Modal = ({
+  modalVisibility,
+  setModalVisibility,
+  fetchEvents,
+  eventState,
+}) => {
+  const [newEvent, setNewEvent] = useState(defaultModalTime);
+  const { title, description, date, dateFrom, dateTo } = newEvent;
 
-  handleChange = (event) => {
-    const { name, value } = event.target;
-    this.setState({
+  const handleInputValue = (e) => {
+    const { name, value } = e.target;
+
+    setNewEvent({
+      ...newEvent,
       [name]: value,
     });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    const { title, description, date, startTime, endTime } = this.state;
-    if (this.props.onSubmit) {
-      this.props.onSubmit({
-        title,
-        description,
-        dateFrom: new Date(`${date} ${startTime}`),
-        dateTo: new Date(`${date} ${endTime}`),
-      });
+  const handleSubmitForm = (e) => {
+    e.preventDefault();
+
+    if (eventTimeIsPast(date, dateFrom)) {
+      alert('You can not create events in the past!');
+      return;
     }
-    this.props.onClose();
+    if (eventAtSameTime(eventState, dateFrom, dateTo, date)) {
+      alert('Time slot is already booked. Please choose another one!');
+      return;
+    }
+
+    if (timeRangeisValid(dateFrom, dateTo)) {
+      alert('Set correct duration of event please!');
+      return;
+    }
+
+    if (durationIsValid(dateFrom, dateTo)) {
+      alert('Your event can not be longer than 6 hours');
+      return;
+    }
+
+    if (timeMultiplicityIsValid(dateFrom, dateTo)) {
+      alert('Your event time must be divisible by 15 minutes');
+      return;
+    }
+
+    postEvent({
+      ...newEvent,
+      dateFrom: getDateTime(date, dateFrom),
+      dateTo: getDateTime(date, dateTo),
+    }).then(() => fetchEvents());
+
+    setModalVisibility(!modalVisibility);
   };
 
-  render() {
-    return (
-      <div className="modal overlay">
-        <div className="modal__content">
-          <div className="create-event">
-            <button
-              className="create-event__close-btn"
-              onClick={this.props.onClose}
-            >
-              +
-            </button>
-            <form className="event-form" onSubmit={this.handleSubmit}>
+  return (
+    <div className="modal overlay">
+      <div className="modal__content">
+        <div className="create-event">
+          <button
+            className="create-event__close-btn"
+            onClick={() => setModalVisibility(!modalVisibility)}
+          >
+            +
+          </button>
+          <form className="event-form" onSubmit={handleSubmitForm}>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              className="event-form__field"
+              onChange={handleInputValue}
+              value={title}
+              required
+            />
+            <div className="event-form__time">
               <input
-                type="text"
-                name="title"
-                placeholder="Title"
+                type="date"
+                name="date"
                 className="event-form__field"
-                onChange={this.handleChange}
-                value={this.state.title}
+                onChange={handleInputValue}
+                value={date}
               />
-              <div className="event-form__time">
-                <input
-                  type="date"
-                  name="date"
-                  className="event-form__field"
-                  onChange={this.handleChange}
-                  value={this.state.date}
-                />
-                <input
-                  type="time"
-                  name="startTime"
-                  className="event-form__field"
-                  onChange={this.handleChange}
-                  value={this.state.startTime}
-                />
-                <span>-</span>
-                <input
-                  type="time"
-                  name="endTime"
-                  className="event-form__field"
-                  onChange={this.handleChange}
-                  value={this.state.endTime}
-                />
-              </div>
-              <textarea
-                name="description"
-                placeholder="Description"
+              <input
+                type="time"
+                name="dateFrom"
                 className="event-form__field"
-                onChange={this.handleChange}
-                value={this.state.description}
-              ></textarea>
-              <button type="submit" className="event-form__submit-btn">
-                Create
-              </button>
-            </form>
-          </div>
+                onChange={handleInputValue}
+                value={dateFrom}
+              />
+              <span>-</span>
+              <input
+                type="time"
+                name="dateTo"
+                className="event-form__field"
+                onChange={handleInputValue}
+                value={dateTo}
+              />
+            </div>
+            <textarea
+              name="description"
+              placeholder="Description"
+              className="event-form__field"
+              onChange={handleInputValue}
+              value={description}
+            ></textarea>
+            <button type="submit" className="event-form__submit-btn">
+              Create
+            </button>
+          </form>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Modal;
+
+Modal.propTypes = {
+  fetchEvents: PropTypes.func.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
+  modalVisibility: PropTypes.bool.isRequired,
+  eventState: PropTypes.array.isRequired,
+};

@@ -5,7 +5,7 @@
   align-items: center;
 
   &__content {
-    background: #6198de59;
+    background: #fff;
     padding: 16px;
     border: 1px solid #ccc;
     border-radius: 8px;
@@ -18,7 +18,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #cccccc45;
+  background-color: rgba(200, 202, 255, 0.137);
+
   z-index: 10;
 }
 
@@ -44,7 +45,6 @@
   flex-direction: column;
 
   &__field {
-    background: #dce5f0;
     margin: 8px;
     border: none;
   }
@@ -57,11 +57,11 @@
     background-color: cornflowerblue;
     border: none;
     padding: 8px 16px;
+    transition: 0.5s;
     border-radius: 8px;
-
+    cursor: pointer;
     &:hover {
-      background-color: rgb(76, 131, 235);
-      cursor: pointer;
+      background-color: blue;
     }
   }
 }

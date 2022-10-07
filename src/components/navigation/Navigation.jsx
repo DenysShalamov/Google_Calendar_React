@@ -1,30 +1,17 @@
 import React from 'react';
-import moment from 'moment';
-import { days } from '../../utils/dateUtils.js';
-
-const formatDate = (date) => moment(date).format('L');
+import PropTypes from 'prop-types';
+import { days, isToday } from '../../utils/dateUtils.js';
 
 const Navigation = ({ weekDates }) => {
   return (
     <header className="calendar__header">
       {weekDates.map((dayDate) => (
-        <div key={Math.random()} className="calendar__day-label day-label">
-          <span
-            className={
-              formatDate(dayDate) === formatDate(new Date())
-                ? 'day-label__day-name day-label__day-name-today'
-                : 'day-label__day-name'
-            }
-          >
-            {days[dayDate.getDay()]}
-          </span>
-          <span
-            className={
-              formatDate(dayDate) === formatDate(new Date())
-                ? 'day-label__day-number day-label__day-number-today'
-                : 'day-label__day-number'
-            }
-          >
+        <div
+          key={Math.floor(Math.random() * 100000000)}
+          className="calendar__day-label day-label "
+        >
+          <span className="day-label__day-name">{days[dayDate.getDay()]}</span>
+          <span className={`day-label${isToday(dayDate) && '__day-number '} `}>
             {dayDate.getDate()}
           </span>
         </div>
@@ -34,3 +21,7 @@ const Navigation = ({ weekDates }) => {
 };
 
 export default Navigation;
+
+Navigation.propTypes = {
+  weekDates: PropTypes.array.isRequired,
+};

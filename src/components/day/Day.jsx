@@ -1,28 +1,40 @@
-import React, { Children } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Hour from '../hour/Hour';
-
 import './day.scss';
 
-const Day = ({ dataDay, dayEvents, onDelete, children }) => {
+const Day = ({
+  dayStart,
+  dataDay,
+  dayEvents,
+  fetchEvents,
+  setModalVisibility,
+  modalVisibility,
+}) => {
   const hours = Array(24)
     .fill()
     .map((val, index) => index);
 
   return (
-    <div className="calendar__day" data-day={dataDay}>
-      {children}
+    <div
+      className="calendar__day "
+      data-day={dataDay}
+      data-month={dayStart.getMonth()}
+    >
       {hours.map((hour) => {
-        // getting all events from the day we will render
         const hourEvents = dayEvents.filter(
           (event) => event.dateFrom.getHours() === hour
         );
+
         return (
           <Hour
+            setModalVisibility={setModalVisibility}
+            modalVisibility={modalVisibility}
             key={dataDay + hour}
-            dataDay={dataDay}
             dataHour={hour}
             hourEvents={hourEvents}
-            onDelete={onDelete}
+            dayStart={dayStart}
+            fetchEvents={fetchEvents}
           />
         );
       })}
@@ -31,3 +43,12 @@ const Day = ({ dataDay, dayEvents, onDelete, children }) => {
 };
 
 export default Day;
+
+Day.propTypes = {
+  fetchEvents: PropTypes.func.isRequired,
+  dayStart: PropTypes.object.isRequired,
+  dataDay: PropTypes.number.isRequired,
+  dayEvents: PropTypes.array.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
+  modalVisibility: PropTypes.bool.isRequired,
+};

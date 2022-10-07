@@ -1,12 +1,12 @@
 .event {
   position: absolute;
-  width: 80%;
+  width: 95%;
   background-color: cornflowerblue;
   z-index: 1;
   border-radius: 8px;
   padding: 8px;
+  transition: 0.5s;
   color: #fff;
-  height: auto;
 
   &__title {
     width: 100%;
@@ -17,21 +17,28 @@
   }
 
   &:hover {
-    font-weight: bold;
-    background-color: red;
+    background-color: blue;
+    cursor: pointer;
+    z-index: 2;
   }
 }
 
 .delete-event-btn {
+  position: absolute;
+  top: 0px;
+  right: 0px;
   cursor: pointer;
   border: none;
-  width: 150px;
-  height: 50px;
-  position: relative;
-  z-index: 1;
-  left: 120px;
-}
+  height: 30px;
+  color: white;
+  width: 42px;
+  background-color: red;
 
-.fa {
-  margin-right: 25px;
+  transition: 0.5s;
+  border-radius: 10px;
+  z-index: 15;
+
+  &:hover {
+    background-color: rgb(196, 6, 6);
+  }
 }

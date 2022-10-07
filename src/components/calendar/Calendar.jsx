@@ -1,68 +1,53 @@
-import React, { Component } from 'react';
-
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import Modal from '../modal/Modal';
 import Navigation from '../navigation/Navigation';
 import Week from '../week/Week';
 import Sidebar from '../sidebar/Sidebar';
-import {
-  fetchEventsCalendare,
-  createEvent,
-  deleteEvent,
-} from '../../gateway/events';
-
+import { getEvents } from '../../gateway/gateWay';
 import './calendar.scss';
-import Modal from '../modal/Modal';
 
-class Calendar extends Component {
-  state = {
-    events: [],
-  };
+const Calendar = ({ weekDates, modalVisibility, setModalVisibility }) => {
+  const [eventState, setEventState] = useState([]);
 
-  componentDidMount() {
-    this.fetchEvents();
-  }
+  const fetchEvents = () =>
+    getEvents().then((eventsList) => setEventState(eventsList));
 
-  fetchEvents = () => {
-    fetchEventsCalendare().then((eventsCalendare) => {
-      this.setState({
-        events: eventsCalendare.map(({ dateFrom, dateTo, ...rest }) => ({
-          dateFrom: new Date(dateFrom),
-          dateTo: new Date(dateTo),
-          ...rest,
-        })),
-      });
-    });
-  };
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
-  handleSubmit = (event) => {
-    createEvent(event).then(() => this.fetchEvents());
-  };
-
-  handleEventDelete = (id) => {
-    deleteEvent(id).then(() => this.fetchEvents());
-  };
-
-  render() {
-    const { weekDates, visible, onClose } = this.props;
-
-    return (
-      <section className="calendar">
-        <Navigation weekDates={weekDates} />
-        <div className="calendar__body">
-          <div className="calendar__week-container">
-            {visible && (
-              <Modal onClose={onClose} onSubmit={this.handleSubmit} />
-            )}
-            <Sidebar />
-            <Week
-              weekDates={weekDates}
-              events={this.state.events}
-              onDelete={this.handleEventDelete}
-            />
-          </div>
+  return (
+    <section className="calendar">
+      {modalVisibility && (
+        <Modal
+          setModalVisibility={setModalVisibility}
+          modalVisibility={modalVisibility}
+          fetchEvents={fetchEvents}
+          eventState={eventState}
+        />
+      )}
+      <Navigation weekDates={weekDates} />
+      <div className="calendar__body">
+        <div className="calendar__week-container">
+          <Sidebar />
+          <Week
+            setModalVisibility={setModalVisibility}
+            modalVisibility={modalVisibility}
+            weekDates={weekDates}
+            events={eventState}
+            fetchEvents={fetchEvents}
+          />
         </div>
-      </section>
-    );
-  }
-}
+      </div>
+    </section>
+  );
+};
 
 export default Calendar;
+
+Calendar.propTypes = {
+  weekDates: PropTypes.array.isRequired,
+  setModalVisibility: PropTypes.func.isRequired,
+  modalVisibility: PropTypes.bool.isRequired,
+};
